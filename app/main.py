@@ -1,5 +1,6 @@
 import barcode
 from barcode.writer import ImageWriter
+from PIL import Image
 import csv
 
 
@@ -11,12 +12,14 @@ with open('Databased.csv', 'rt') as f:
         for field in row:
             if field == confirmation:
                 foundBarcode = row[11]
-                name = row[1] + row[2]
-
-print foundBarcode
-print name
+                name = row[1] + ' ' + row[2]
 
 
 CODE = barcode.get_barcode_class('code128')
 code = CODE(foundBarcode, writer=ImageWriter())
 fullname = code.save(name)
+
+badge = Image.open('badge2017.png', 'r')
+img = Image.open(name + ".png", 'r')
+img_w, img_h = img.size
+badge_w, badge_h = badge.size
