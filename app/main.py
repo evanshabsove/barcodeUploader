@@ -1,14 +1,18 @@
 import barcode
+import csv
 
-from barcode.writer import ImageWriter
-ean = barcode.get('ean13', '123456789102', writer=ImageWriter())
-filename = ean.save('ean13')
-filename
+# working code to create picture
+# from barcode.writer import ImageWriter
+# ean = barcode.get('ean13', '123456789102', writer=ImageWriter())
+# filename = ean.save('ean13')
+# filename
 
-# def makingBarcode(name, barcode):
-#     from barcode.writer import ImageWriter
-#     ean = barcode.get(name, barcode, writer=ImageWriter())
-#     filename = ean.save(name)
-#     filename
-#
-# makingBarcode("test", '123456789102')
+
+confirmation = "XRV29M"
+
+with open('Databased.csv', 'rt') as f:
+    reader = csv.reader(f, delimiter=',')
+    for row in reader:
+        for field in row:
+            if field == confirmation:
+                print row[11]
