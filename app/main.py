@@ -23,3 +23,6 @@ badge = Image.open('badge2017.png', 'r')
 img = Image.open(name + ".png", 'r')
 img_w, img_h = img.size
 badge_w, badge_h = badge.size
+offset = ((badge_w - img_w)/2, (badge_h - img_h)/2 + 30)
+badge.paste(img, offset)
+badge.save('out.png')
