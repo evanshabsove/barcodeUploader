@@ -5,6 +5,7 @@ except:
 
 from Tkinter import *
 import ttk
+import os
 import barcode
 from barcode.writer import ImageWriter
 from PIL import Image
@@ -12,9 +13,22 @@ import csv
 # top = tkinter.Tk()
 # # Code to add widgets will go here...
 # top.mainloop()
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
-def badgeGenerator(*args):
-    confirmation = confirmation_code.get()
+    return os.path.join(base_path, relative_path)
+
+Logo = resource_path("BADGE DESIGN.png")
+
+
+
+def badgeGenerator(confirmation):
+
     foundBarcode = 1
     with open('Databased.csv', 'rt') as f:
         reader = csv.reader(f, delimiter=',')
@@ -25,7 +39,6 @@ def badgeGenerator(*args):
                     name = row[1] + ' ' + row[2]
 
 
-
     if foundBarcode == 1:
         print "nope"
     else:
@@ -33,14 +46,15 @@ def badgeGenerator(*args):
         code = CODE(foundBarcode, writer=ImageWriter())
         fullname = code.save(name)
 
-        badge = Image.open('badge2017.png', 'r')
+        badge = Image.open(Logo, 'r')
         img = Image.open(name + ".png", 'r')
         img_w, img_h = img.size
         badge_w, badge_h = badge.size
-        offset = ((badge_w - img_w)/2, (badge_h - img_h)/2 + 30)
+        offset = ((badge_w - img_w)/2 + 400, (badge_h - img_h)/2 + 670)
+        offset2 = ((badge_w - img_w)/2 - 400, (badge_h - img_h)/2 + 670)
         badge.paste(img, offset)
-        badge.save('out.jpg')
-
+        badge.paste(img, offset2)
+        badge.save('out.png')
 
 root = Tk()
 root.title("Print your badge")
