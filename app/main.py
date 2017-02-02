@@ -5,6 +5,7 @@ except:
 
 from Tkinter import *
 import ttk
+import tkMessageBox
 import os
 import barcode
 from barcode.writer import ImageWriter
@@ -29,7 +30,7 @@ def badgeGenerator(*args):
 
 
     if foundBarcode == 1:
-        print "nope"
+        tkMessageBox.showerror("Error", "Did not match any codes, try again (CASE SENSATIVE)")
     else:
         CODE = barcode.get_barcode_class('code128')
         code = CODE(foundBarcode, writer=ImageWriter())
@@ -39,9 +40,11 @@ def badgeGenerator(*args):
         img = Image.open(name + ".png", 'r')
         img_w, img_h = img.size
         badge_w, badge_h = badge.size
-        offset = ((badge_w - img_w)/2, (badge_h - img_h)/2 + 30)
+        offset = ((badge_w - img_w)/2 + 400, (badge_h - img_h)/2 + 670)
+        offset2 = ((badge_w - img_w)/2 - 400, (badge_h - img_h)/2 + 670)
         badge.paste(img, offset)
-        badge.save('out.jpg')
+        badge.paste(img, offset2)
+        badge.save('out.png')
 
 
 
