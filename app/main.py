@@ -15,6 +15,8 @@ import csv
 # # Code to add widgets will go here...
 # -*- mode: python -*-
 
+# Adding csv?
+
 # main function that prints off logo
 def badgeGenerator(*args):
     confirmation = confirmation_code.get()
