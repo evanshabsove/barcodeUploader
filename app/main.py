@@ -17,11 +17,23 @@ import csv
 
 # Adding csv?
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+image = resource_path('BADGE DESIGN.png')
+csv_path = resource_path('Databased.csv')
 # main function that prints off logo
 def badgeGenerator(*args):
     confirmation = confirmation_code.get()
     foundBarcode = 1
-    with open('Databased.csv', 'rt') as f:
+    with open(csv_path, 'rt') as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
             for field in row:
@@ -38,7 +50,7 @@ def badgeGenerator(*args):
         code = CODE(foundBarcode, writer=ImageWriter())
         fullname = code.save(name)
 
-        badge = Image.open('BADGE DESIGN.png', 'r')
+        badge = Image.open(image, 'r')
         img = Image.open(name + ".png", 'r')
         img_w, img_h = img.size
         badge_w, badge_h = badge.size
