@@ -9,26 +9,15 @@ import tkMessageBox
 import os
 import barcode
 from barcode.writer import ImageWriter
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import csv
 # top = tkinter.Tk()
 # # Code to add widgets will go here...
 # -*- mode: python -*-
 
 # Adding csv?
-
-def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
-image = resource_path('BADGE DESIGN.png')
-csv_path = resource_path('Databased.csv')
+image = 'BADGE DESIGN.png'
+csv_path = 'Databased.csv'
 # main function that prints off logo
 def badgeGenerator(*args):
     confirmation = confirmation_code.get()
@@ -49,7 +38,6 @@ def badgeGenerator(*args):
         CODE = barcode.get_barcode_class('code128')
         code = CODE(foundBarcode, writer=ImageWriter())
         fullname = code.save(name)
-
         badge = Image.open(image, 'r')
         img = Image.open(name + ".png", 'r')
         img_w, img_h = img.size
@@ -58,7 +46,7 @@ def badgeGenerator(*args):
         offset2 = ((badge_w - img_w)/2 - 400, (badge_h - img_h)/2 + 670)
         badge.paste(img, offset)
         badge.paste(img, offset2)
-        badge.save('out.png')
+        badge.save('out.jpg')
 
 
 
@@ -66,20 +54,19 @@ def badgeGenerator(*args):
 root = Tk()
 root.title("Print your badge")
 
-mainframe = ttk.Frame(root, padding="3 3 12 12")
+mainframe = ttk.Frame(root, padding="100 100 100 100")
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
 confirmation_code = StringVar()
 
-confirmation_code_entry = ttk.Entry(mainframe, width=7, textvariable=confirmation_code)
+confirmation_code_entry = ttk.Entry(mainframe, width=20, textvariable=confirmation_code)
 confirmation_code_entry.grid(column=2, row=1, sticky=(W, E))
 b = ttk.Button(mainframe, text="Submit", command=badgeGenerator)
 b.grid(column = 1, row = 1)
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
 
-print b.cget("command")
 confirmation_code_entry.focus()
 root.bind('<Return>', badgeGenerator)
 
