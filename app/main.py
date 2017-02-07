@@ -34,6 +34,7 @@ def badgeGenerator(*args):
 
     if foundBarcode == 1:
         tkMessageBox.showerror("Error", "Did not match any codes, try again (CASE SENSATIVE)")
+        confirmation_code_entry.delete(0, 'end')
     else:
         CODE = barcode.get_barcode_class('code128')
         code = CODE(foundBarcode, writer=ImageWriter())
@@ -47,7 +48,13 @@ def badgeGenerator(*args):
         badge.paste(img, offset)
         badge.paste(img, offset2)
         badge.save('out.jpg')
-
+        img = Image.open('out.jpg')
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.truetype("Aaargh.ttf", 26)
+        draw.text((1165, 1825),name,(0,0,0),font=font)
+        draw.text((365, 1825),name,(0,0,0),font=font)
+        img.save('outtext.jpg')
+        confirmation_code_entry.delete(0, 'end')
 
 
 # tkinter program
