@@ -20,7 +20,9 @@ image = 'BADGE DESIGN.png'
 csv_path = 'Databased.csv'
 # main function that prints off logo
 def badgeGenerator(*args):
-    confirmation = confirmation_code.get()
+    confirmation = confirmation_code_entry.get("1.0",END)
+    confirmation = str(confirmation)
+    confirmation = confirmation.rstrip()
     foundBarcode = 1
     with open(csv_path, 'rt') as f:
         reader = csv.reader(f, delimiter=',')
@@ -34,7 +36,6 @@ def badgeGenerator(*args):
 
     if foundBarcode == 1:
         tkMessageBox.showerror("Error", "Did not match any codes, try again (CASE SENSATIVE)")
-        confirmation_code_entry.delete(0, 'end')
     else:
         CODE = barcode.get_barcode_class('code128')
         code = CODE(foundBarcode, writer=ImageWriter())
@@ -54,7 +55,6 @@ def badgeGenerator(*args):
         draw.text((1165, 1825),name,(0,0,0),font=font)
         draw.text((365, 1825),name,(0,0,0),font=font)
         img.save('outtext.jpg')
-        confirmation_code_entry.delete(0, 'end')
 
 
 # tkinter program
@@ -68,7 +68,7 @@ mainframe.rowconfigure(0, weight=1)
 
 confirmation_code = StringVar()
 
-confirmation_code_entry = ttk.Entry(mainframe, width=20, textvariable=confirmation_code)
+confirmation_code_entry = Text(mainframe, width=20)
 confirmation_code_entry.grid(column=2, row=1, sticky=(W, E))
 b = ttk.Button(mainframe, text="Submit", command=badgeGenerator)
 b.grid(column = 1, row = 1)
