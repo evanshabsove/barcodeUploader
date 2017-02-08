@@ -50,9 +50,11 @@ def badgeGenerator(*args):
         badge.save('out.jpg')
         img = Image.open('out.jpg')
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype("Aaargh.ttf", 26)
-        draw.text((1165, 1825),name,(0,0,0),font=font)
-        draw.text((365, 1825),name,(0,0,0),font=font)
+        font = ImageFont.truetype("LiberationMono-Regular.ttf", 26)
+        length = len(name)
+        name_offset = length*8
+        draw.text((1235 - name_offset, 1825),name,(0,0,0),font=font)
+        draw.text((435 - name_offset, 1825),name,(0,0,0),font=font)
         img.save('outtext.jpg')
         confirmation_code_entry.delete(0, END)
 
