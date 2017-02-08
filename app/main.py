@@ -25,10 +25,9 @@ def badgeGenerator(*args):
     with open(csv_path, 'rt') as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
-            for field in row:
-                if field == confirmation:
-                    foundBarcode = row[11]
-                    name = row[1] + ' ' + row[2]
+            if row[12] == confirmation:
+                foundBarcode = row[11]
+                name = row[1] + ' ' + row[2]
 
 
 
