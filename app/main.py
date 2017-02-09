@@ -8,8 +8,8 @@ import ttk
 import tkMessageBox
 import os
 import barcode
-# import win32print
-# import win32ui
+import win32print
+import win32ui
 from barcode.writer import ImageWriter
 from PIL import Image, ImageDraw, ImageFont, ImageWin, ImageTk
 import csv
@@ -57,79 +57,79 @@ def badgeGenerator(*args):
         draw.text((1235 - name_offset, 1825),name,(0,0,0),font=font)
         draw.text((435 - name_offset, 1825),name,(0,0,0),font=font)
         img.save(name + 'text.jpg')
-        # #
-        # # Constants for GetDeviceCaps
-        # #
-        # #
-        # # HORZRES / VERTRES = printable area
-        # #
-        # HORZRES = 8
-        # VERTRES = 10
-        # #
-        # # LOGPIXELS = dots per inch
-        # #
-        # LOGPIXELSX = 88
-        # LOGPIXELSY = 90
-        # #
-        # # PHYSICALWIDTH/HEIGHT = total area
-        # #
-        # PHYSICALWIDTH = 110
-        # PHYSICALHEIGHT = 111
-        # #
-        # # PHYSICALOFFSETX/Y = left / top margin
-        # #
-        # PHYSICALOFFSETX = 112
-        # PHYSICALOFFSETY = 113
         #
-        # printer_name = win32print.GetDefaultPrinter ()
-        # file_name = name + 'text.jpg'
+        # Constants for GetDeviceCaps
         #
-        # #
-        # # You can only write a Device-independent bitmap
-        # #  directly to a Windows device context; therefore
-        # #  we need (for ease) to use the Python Imaging
-        # #  Library to manipulate the image.
-        # #
-        # # Create a device context from a named printer
-        # #  and assess the printable size of the paper.
-        # #
-        # hDC = win32ui.CreateDC ()
-        # hDC.CreatePrinterDC (printer_name)
-        # printable_area = hDC.GetDeviceCaps (HORZRES), hDC.GetDeviceCaps (VERTRES)
-        # printer_size = hDC.GetDeviceCaps (PHYSICALWIDTH), hDC.GetDeviceCaps (PHYSICALHEIGHT)
-        # printer_margins = hDC.GetDeviceCaps (PHYSICALOFFSETX), hDC.GetDeviceCaps (PHYSICALOFFSETY)
         #
-        # #
-        # # Open the image, rotate it if it's wider than
-        # #  it is high, and work out how much to multiply
-        # #  each pixel by to get it as big as possible on
-        # #  the page without distorting.
-        # #
-        # bmp = Image.open (file_name)
-        # if bmp.size[0] > bmp.size[1]:
-        #   bmp = bmp.rotate (90)
+        # HORZRES / VERTRES = printable area
         #
-        # ratios = [1.0 * printable_area[0] / bmp.size[0], 1.0 * printable_area[1] / bmp.size[1]]
-        # scale = min (ratios)
+        HORZRES = 8
+        VERTRES = 10
         #
-        # #
-        # # Start the print job, and draw the bitmap to
-        # #  the printer device at the scaled size.
-        # #
-        # hDC.StartDoc (file_name)
-        # hDC.StartPage ()
+        # LOGPIXELS = dots per inch
         #
-        # dib = ImageWin.Dib (bmp)
-        # scaled_width, scaled_height = [int (scale * i) for i in bmp.size]
-        # x1 = int ((printer_size[0] - scaled_width) / 2)
-        # y1 = int ((printer_size[1] - scaled_height) / 2)
-        # x2 = x1 + scaled_width
-        # y2 = y1 + scaled_height
-        # dib.draw (hDC.GetHandleOutput (), (x1, y1, x2, y2))
+        LOGPIXELSX = 88
+        LOGPIXELSY = 90
         #
-        # hDC.EndPage ()
-        # hDC.EndDoc ()
-        # hDC.DeleteDC ()
+        # PHYSICALWIDTH/HEIGHT = total area
+        #
+        PHYSICALWIDTH = 110
+        PHYSICALHEIGHT = 111
+        #
+        # PHYSICALOFFSETX/Y = left / top margin
+        #
+        PHYSICALOFFSETX = 112
+        PHYSICALOFFSETY = 113
+
+        printer_name = win32print.GetDefaultPrinter ()
+        file_name = name + 'text.jpg'
+
+        #
+        # You can only write a Device-independent bitmap
+        #  directly to a Windows device context; therefore
+        #  we need (for ease) to use the Python Imaging
+        #  Library to manipulate the image.
+        #
+        # Create a device context from a named printer
+        #  and assess the printable size of the paper.
+        #
+        hDC = win32ui.CreateDC ()
+        hDC.CreatePrinterDC (printer_name)
+        printable_area = hDC.GetDeviceCaps (HORZRES), hDC.GetDeviceCaps (VERTRES)
+        printer_size = hDC.GetDeviceCaps (PHYSICALWIDTH), hDC.GetDeviceCaps (PHYSICALHEIGHT)
+        printer_margins = hDC.GetDeviceCaps (PHYSICALOFFSETX), hDC.GetDeviceCaps (PHYSICALOFFSETY)
+
+        #
+        # Open the image, rotate it if it's wider than
+        #  it is high, and work out how much to multiply
+        #  each pixel by to get it as big as possible on
+        #  the page without distorting.
+        #
+        bmp = Image.open (file_name)
+        if bmp.size[0] > bmp.size[1]:
+          bmp = bmp.rotate (90)
+
+        ratios = [1.0 * printable_area[0] / bmp.size[0], 1.0 * printable_area[1] / bmp.size[1]]
+        scale = min (ratios)
+
+        #
+        # Start the print job, and draw the bitmap to
+        #  the printer device at the scaled size.
+        #
+        hDC.StartDoc (file_name)
+        hDC.StartPage ()
+
+        dib = ImageWin.Dib (bmp)
+        scaled_width, scaled_height = [int (scale * i) for i in bmp.size]
+        x1 = int ((printer_size[0] - scaled_width) / 2)
+        y1 = int ((printer_size[1] - scaled_height) / 2)
+        x2 = x1 + scaled_width
+        y2 = y1 + scaled_height
+        dib.draw (hDC.GetHandleOutput (), (x1, y1, x2, y2))
+
+        hDC.EndPage ()
+        hDC.EndDoc ()
+        hDC.DeleteDC ()
         os.remove('out.jpg')
         os.remove(name + ".png")
         # os.remove(name + 'text.jpg')
@@ -153,6 +153,12 @@ class FullScreenApp(object):
         self.master.geometry(self._geom)
         self._geom=geom
 
+# method for giving character limit
+def character_limit(confirmation_code):
+    if len(confirmation_code.get()) > 0:
+        confirmation_code.set(confirmation_code.get()[:6])
+
+
 # main root calling method to make it go full screen
 root = Tk()
 root.configure()
@@ -165,33 +171,31 @@ gui_style.configure('My.TButton')
 gui_style.configure('My.TFrame')
 
 # Main frame styling mostly for changing padding
-mainframe = ttk.Frame(root, padding="600 200 200 600", style='My.TFrame')
+mainframe = ttk.Frame(root, padding="350 100 0 0", style='My.TFrame')
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
 # Labels
 img = ImageTk.PhotoImage(Image.open("logo.png"))
-image_panel = Label(mainframe, image = img)
-image_panel.grid(column=1, row=0, columnspan=2)
-first_text = Label(mainframe, text="Media Badge Self-Serve Kiosk", font=("Helvetica", 32), fg="red")
-first_text.grid(column=1, row=1, columnspan=2)
-second_text = Label(mainframe, text="You should have recieved your confirmation", font=("Helvetica", 28), fg="red")
-second_text.grid(column=1, row=2, columnspan=2)
-third_text = Label(mainframe, text="code by email. Enter it below.", font=("Helvetica", 28), fg="red")
-third_text.grid(column=1, row=3, columnspan=2)
-fourth_text = Label(mainframe, text="If you do not have a code,", font=("Helvetica", 28), fg="red")
-fourth_text.grid(column=1, row=4, columnspan=2)
-fith_text = Label(mainframe, text="please see our check-in desk", font=("Helvetica", 28), fg="red")
-fith_text.grid(column=1, row=5, columnspan=2)
+image_panel = Label(mainframe, image = img, pady=20)
+image_panel.grid(column=1, row=0)
+first_text = Label(mainframe, text="Media Badge Self-Serve Kiosk", font=("Helvetica", 42), fg="red", pady=20)
+first_text.grid(column=1, row=1)
+second_text = Label(mainframe, text="You should have recieved your confirmation code by email. Enter it below.", font=("Helvetica", 28), fg="black", pady=20)
+second_text.grid(column=1, row=2)
+fourth_text = Label(mainframe, text="If you do not have a code, please see our check-in desk.", font=("Helvetica", 28), fg="red", pady=20)
+fourth_text.grid(column=1, row=4)
 
 # entry/submit button
 confirmation_code = StringVar()
 confirmation_code_entry = ttk.Entry(mainframe, font = "Helvetica 44", justify='center', width=12, textvariable=confirmation_code)
-confirmation_code_entry.grid(column=2, row=6, sticky=(W, E))
+confirmation_code_entry.grid(column=1, row=5, sticky=(W, E))
 b = Button(mainframe, text="Submit", font = "Helvetica 38", width=10, command=badgeGenerator)
 b.grid(column = 1, row = 6)
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
+
+confirmation_code.trace("w", lambda *args: character_limit(confirmation_code))
 
 confirmation_code_entry.focus()
 root.bind('<Return>', badgeGenerator)
