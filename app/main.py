@@ -11,7 +11,7 @@ import barcode
 # import win32print
 # import win32ui
 from barcode.writer import ImageWriter
-from PIL import Image, ImageDraw, ImageFont, ImageWin
+from PIL import Image, ImageDraw, ImageFont, ImageWin, ImageTk
 import csv
 # top = tkinter.Tk()
 # # Code to add widgets will go here...
@@ -29,7 +29,7 @@ def badgeGenerator(*args):
         for row in reader:
             if row[12] == confirmation:
                 foundBarcode = row[11]
-                name = row[1] + ' ' + row[2]
+                name = row[1] + ' ' + row[2] + ' ' +  row[5]
 
 
 
@@ -132,11 +132,13 @@ def badgeGenerator(*args):
         # hDC.DeleteDC ()
         os.remove('out.jpg')
         os.remove(name + ".png")
-        os.remove(name + 'text.jpg')
+        # os.remove(name + 'text.jpg')
         confirmation_code_entry.delete(0, END)
 
 
 # tkinter program
+
+# Method to make it load full screen every time
 class FullScreenApp(object):
     def __init__(self, master, **kwargs):
         self.master=master
@@ -151,29 +153,44 @@ class FullScreenApp(object):
         self.master.geometry(self._geom)
         self._geom=geom
 
-
+# main root calling method to make it go full screen
 root = Tk()
-root.configure(background='#334353')
+root.configure()
 root.title("Print your badge")
 app=FullScreenApp(root)
 
+# Ways to style button and frame, mostly for changing colours
 gui_style = ttk.Style()
-gui_style.configure('My.TButton', foreground='#334353')
-gui_style.configure('My.TFrame', background='#334353')
+gui_style.configure('My.TButton')
+gui_style.configure('My.TFrame')
 
-mainframe = ttk.Frame(root, padding="600 400 400 600", style='My.TFrame')
+# Main frame styling mostly for changing padding
+mainframe = ttk.Frame(root, padding="600 200 200 600", style='My.TFrame')
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
 mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
+# Labels
+img = ImageTk.PhotoImage(Image.open("logo.png"))
+image_panel = Label(mainframe, image = img)
+image_panel.grid(column=1, row=0, columnspan=2)
+first_text = Label(mainframe, text="Media Badge Self-Serve Kiosk", font=("Helvetica", 32), fg="red")
+first_text.grid(column=1, row=1, columnspan=2)
+second_text = Label(mainframe, text="You should have recieved your confirmation", font=("Helvetica", 28), fg="red")
+second_text.grid(column=1, row=2, columnspan=2)
+third_text = Label(mainframe, text="code by email. Enter it below.", font=("Helvetica", 28), fg="red")
+third_text.grid(column=1, row=3, columnspan=2)
+fourth_text = Label(mainframe, text="If you do not have a code,", font=("Helvetica", 28), fg="red")
+fourth_text.grid(column=1, row=4, columnspan=2)
+fith_text = Label(mainframe, text="please see our check-in desk", font=("Helvetica", 28), fg="red")
+fith_text.grid(column=1, row=5, columnspan=2)
 
-w = Label(mainframe, text="Input your verification code.", font=("Helvetica", 32), background='#334353', fg="white")
-w.grid(column=1, row=0, columnspan=2)
+# entry/submit button
 confirmation_code = StringVar()
 confirmation_code_entry = ttk.Entry(mainframe, font = "Helvetica 44", justify='center', width=12, textvariable=confirmation_code)
-confirmation_code_entry.grid(column=2, row=1, sticky=(W, E))
+confirmation_code_entry.grid(column=2, row=6, sticky=(W, E))
 b = Button(mainframe, text="Submit", font = "Helvetica 38", width=10, command=badgeGenerator)
-b.grid(column = 1, row = 1)
+b.grid(column = 1, row = 6)
 for child in mainframe.winfo_children(): child.grid_configure(padx=5, pady=5)
 
 confirmation_code_entry.focus()
